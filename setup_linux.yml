@@ -1,0 +1,9 @@
+---
+#file: /setup_linux.yml
+
+- hosts: localhost
+  gather_facts: false
+  roles: 
+    - role: "linux_setup"
+
+

@@ -1,0 +1,84 @@
+---
+
+- name: Install psql
+  apt:
+    name: postgresql-14
+    state: present
+
+- name: Install tmux
+  apt: 
+    name: tmux
+    state: latest
+- name: Install tldr
+  apt:
+    name: tldr
+    state: latest
+  
+- name: Install httpie
+  apt:
+    name: httpie
+    state: latest
+  become: "yes"
+
+- name: Install nvim build prerequisites
+  apt:
+    pkg:
+      - ninja-build 
+      - gettext 
+      - cmake 
+      - unzip 
+      - curl
+    state: present
+  become: "yes"
+
+- name: Checkout neovim
+  git:
+    repo: https://github.com/neovim/neovim
+    dest: "{{defaults.home}}/neovim"
+    version: stable
+    force: yes
+
+- name: Install neovim
+  shell: 
+    cmd: 'rm -r build'
+    chdir: "{{ defaults.home }}/neovim"
+
+- name: make cmake shit
+  community.general.make: 
+    target: install
+    chdir: "{{ defaults.home }}/neovim"
+    params:
+      CMAKE_EXTRA_FLAGS: "-DCMAKE_INSTALL_PREFIX={{defaults.home}}/neovim"
+
+- name: export neovim to path
+  shell:
+    cmd: 'export PATH=$HOME/neovim/bin:$PATH'
+
+- name: Install ghcup required packages
+  apt: 
+    pkg: 
+      - build-essential 
+      - curl 
+      - libffi-dev 
+      - libffi8ubuntu1 
+      - libgmp-dev 
+      - libgmp10 
+      - libncurses-dev 
+      - libncurses5 
+      - libtinfo5
+    state: present
+  become: "yes"
+
+- name: Install ghcup
+  shell: 'curl --proto =https --tlsv1.2 -sSf https://get-ghcup.haskell.org | BOOTSTRAP_HASKELL_NONINTERACTIVE=1 BOOTSTRAP_HASKELL_GHC_VERSION=9.0.2 BOOTSTRAP_HASKELL_CABAL_VERSION=latest BOOTSTRAP_HASKELL_INSTALL_STACK=1 BOOTSTRAP_HASKELL_INSTALL_HLS=1 BOOTSTRAP_HASKELL_ADJUST_BASHRC=P sh'
+
+- name: install dbmate
+  shell: 
+    cmd: 'curl -fsSL -o /usr/local/bin/dbmate https://github.com/amacneil/dbmate/releases/latest/download/dbmate-linux-amd64 && chmod +x /usr/local/bin/dbmate'
+  become: yes
+
+- name: Install fish
+  apt:
+    name: fish
+    state: latest
+  become: "yes"
