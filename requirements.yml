@@ -1,0 +1,16 @@
+---
+collection:
+  - name: community.digitalocean
+    version: "1.24.0"
+    source: https://galaxy.ansible.com
+  - name: community.general
+    version: "7.3.0"
+    source: https://galaxy.ansible.com
+  - name: community.postgresql
+    version: "3.2.0"
+    source: https://galaxy.ansible.com
+
+roles:
+  - name: datadog.data.dog
+    version: "4.20.1"
+    source: https://galaxy.ansible.com
