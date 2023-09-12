@@ -89,6 +89,13 @@
     cmd: 'curl -L https://github.com/sass/dart-sass/releases/download/1.66.1/dart-sass-1.66.1-linux-x64.tar.gz && tar -xvf dart-sass-1.66.1-linux-x64.tar.gz && export PATH=$HOME/dart-sass/:$PATH'
   become: yes
 
+- name: install pipenv
+  pip:
+    name: pipenv
+    extra_args: --user
+    virtualenv: pyenv
+    state: "present"
+
 - name: Install fish
   apt:
     name: fish
