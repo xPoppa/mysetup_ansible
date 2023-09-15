@@ -1,5 +1,5 @@
 ---
-collection:
+collections:
   - name: community.digitalocean
     version: "1.24.0"
     source: https://galaxy.ansible.com
@@ -11,6 +11,6 @@ collection:
     source: https://galaxy.ansible.com
 
 roles:
-  - name: datadog.data.dog
+  - name: datadog.datadog
     version: "4.20.1"
     source: https://galaxy.ansible.com

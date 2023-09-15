@@ -4,18 +4,21 @@
   apt:
     name: postgresql-14
     state: present
+  become: "yes"
 
 - name: Install tmux
   apt: 
     name: tmux
     state: latest
     force_apt_get: true
+  become: "yes"
 
 - name: Install tldr
   apt:
     name: tldr
     state: latest
     force_apt_get: true
+  become: "yes"
   
 - name: Install httpie
   apt:
@@ -42,11 +45,6 @@
     dest: "{{defaults.home}}/neovim"
     version: stable
     force: yes
-
-- name: Install neovim
-  shell: 
-    cmd: 'rm -r build'
-    chdir: "{{ defaults.home }}/neovim"
 
 - name: make cmake shit
   community.general.make: 
@@ -83,18 +81,6 @@
   shell: 
     cmd: 'curl -fsSL -o /usr/local/bin/dbmate https://github.com/amacneil/dbmate/releases/latest/download/dbmate-linux-amd64 && chmod +x /usr/local/bin/dbmate'
   become: yes
-
-- name: install sass
-  shell:
-    cmd: 'curl -L https://github.com/sass/dart-sass/releases/download/1.66.1/dart-sass-1.66.1-linux-x64.tar.gz && tar -xvf dart-sass-1.66.1-linux-x64.tar.gz && export PATH=$HOME/dart-sass/:$PATH'
-  become: yes
-
-- name: install pipenv
-  pip:
-    name: pipenv
-    extra_args: --user
-    virtualenv: pyenv
-    state: "present"
 
 - name: Install fish
   apt:
