@@ -4,7 +4,7 @@ Check whether laptop has nvidia drivers
 - install ansible
     - install pipx `pip install --user pipx`
     - install ansible `pipx install ansible-core=2.13.6`
-    - install community.general `ansible-galaxy collection install community.general`
+    - install roles and collections `ansible-galaxy install requirements.yml`
 
 - make user ask never passwd when doing sudo
     - `sudo visudo`
