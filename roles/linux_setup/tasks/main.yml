@@ -1,89 +1,77 @@
 ---
 
 - name: Install psql
-  apt:
-    name: postgresql-14
+  ansible.builtin.apt:
+    name: postgresql-13
     state: present
-  become: "yes"
+  become: true
 
 - name: Install tmux
-  apt: 
+  ansible.builtin.apt:
     name: tmux
-    state: latest
+    state: present
     force_apt_get: true
-  become: "yes"
+  become: true
 
 - name: Install tldr
-  apt:
+  ansible.builtin.apt:
     name: tldr
-    state: latest
+    state: present
     force_apt_get: true
-  become: "yes"
-  
-- name: Install httpie
-  apt:
-    name: httpie
-    state: latest
-    force_apt_get: true
-  become: "yes"
+  become: true
 
 - name: Install nvim build prerequisites
-  apt:
+  ansible.builtin.apt:
     pkg:
-      - ninja-build 
-      - gettext 
-      - cmake 
-      - unzip 
+      - ninja-build
+      - gettext
+      - cmake
+      - unzip
       - curl
     state: present
     force_apt_get: true
-  become: "yes"
+  become: true
 
 - name: Checkout neovim
-  git:
+  ansible.builtin.git:
     repo: https://github.com/neovim/neovim
-    dest: "{{defaults.home}}/neovim"
+    dest: "{{ defaults.home }}/neovim"
     version: stable
-    force: yes
+    force: true
 
-- name: make cmake shit
-  community.general.make: 
+- name: Make cmake shit
+  community.general.make:
     target: install
     chdir: "{{ defaults.home }}/neovim"
     params:
-      CMAKE_EXTRA_FLAGS: "-DCMAKE_INSTALL_PREFIX={{defaults.home}}/neovim"
+      CMAKE_EXTRA_FLAGS: "-DCMAKE_INSTALL_PREFIX={{ defaults.home }}/neovim"
 
-- name: export neovim to path
-  shell:
+- name: Export neovim to path
+  ansible.builtin.shell:
     cmd: 'export PATH=$HOME/neovim/bin:$PATH'
 
 - name: Install ghcup required packages
-  apt: 
-    pkg: 
-      - build-essential 
-      - curl 
-      - libffi-dev 
-      - libffi8ubuntu1 
-      - libgmp-dev 
-      - libgmp10 
-      - libncurses-dev 
-      - libncurses5 
+  ansible.builtin.apt:
+    pkg:
+      - build-essential
+      - curl
+      - libffi-dev
+      - libffi8ubuntu1
+      - libgmp-dev
+      - libgmp10
+      - libncurses-dev
+      - libncurses5
       - libtinfo5
       - libpq-dev
     state: present
     force_apt_get: true
-  become: "yes"
+  become: true
 
 - name: Install ghcup
-  shell: 'curl --proto =https --tlsv1.2 -sSf https://get-ghcup.haskell.org | BOOTSTRAP_HASKELL_NONINTERACTIVE=1 BOOTSTRAP_HASKELL_GHC_VERSION=9.0.2 BOOTSTRAP_HASKELL_CABAL_VERSION=latest BOOTSTRAP_HASKELL_INSTALL_STACK=1 BOOTSTRAP_HASKELL_INSTALL_HLS=1 BOOTSTRAP_HASKELL_ADJUST_BASHRC=P sh'
-
-- name: install dbmate
-  shell: 
-    cmd: 'curl -fsSL -o /usr/local/bin/dbmate https://github.com/amacneil/dbmate/releases/latest/download/dbmate-linux-amd64 && chmod +x /usr/local/bin/dbmate'
-  become: yes
+  ansible.builtin.shell: 'set -o pipefail && curl --proto =https --tlsv1.2 -sSf https://get-ghcup.haskell.org | BOOTSTRAP_HASKELL_NONINTERACTIVE=1 BOOTSTRAP_HASKELL_GHC_VERSION=8.8.4 BOOTSTRAP_HASKELL_CABAL_VERSION=latest BOOTSTRAP_HASKELL_INSTALL_STACK=1 BOOTSTRAP_HASKELL_INSTALL_HLS=1 BOOTSTRAP_HASKELL_ADJUST_BASHRC=P sh'
 
 - name: Install fish
-  apt:
+  ansible.builtin.apt:
     name: fish
-    state: latest
-  become: "yes"
+    state: present
+  become: true
