@@ -7,10 +7,17 @@
   become: true
 
 - name: Set fish as default shell
-  ansible.builtin.shell: 'chsh -s $(which fish) root'
+  ansible.builtin.shell: 'chsh -s $(which fish)'
 
 - name: Install oh my fish
   ansible.builtin.shell: "curl https://raw.githubusercontent.com/oh-my-fish/oh-my-fish/master/bin/install | fish"
 
 - name: Install bob the fish
   ansible.builtin.shell: "omf install bobthefish"
+  args:
+    executable: "/usr/bin/fish"
+
+- name: Install nvm
+  ansible.builtin.shell: "omf install nvm"
+  args:
+    executable: "/usr/bin/fish"
