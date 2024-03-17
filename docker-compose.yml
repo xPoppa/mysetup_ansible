@@ -1,0 +1,17 @@
+---
+version: "3"
+
+services:
+  my_container:
+    image: ubuntu:latest
+    container_name: test_setup
+    volumes:
+      - .:/playbooks
+    tty: true
+    stdin_open: true
+    environment:
+      - ANSIBLE_HOST_KEY_CHECKING=False
+      - DEBIAN_FRONTEND=noninteractive
+      - TZ=Europe/Amsterdam
+
+    command: bash -c "apt-get update && apt-get install -y python3 ansible curl git && bash"

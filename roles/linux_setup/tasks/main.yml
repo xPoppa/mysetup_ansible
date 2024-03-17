@@ -1,8 +1,12 @@
 ---
 
+- name: "Update cache"
+  ansible.builtin.apt:
+    update_cache:  true
+
 - name: Install psql
   ansible.builtin.apt:
-    name: postgresql-13
+    name: postgresql-14
     state: present
   become: true
 
@@ -33,22 +37,14 @@
   become: true
 
 - name: Checkout neovim
-  ansible.builtin.git:
-    repo: https://github.com/neovim/neovim
+  ansible.builtin.get_url:
+    url: "https://github.com/neovim/neovim/releases/download/v0.9.5/nvim-linux64.tar.gz"
     dest: "{{ defaults.home }}/neovim"
-    version: stable
-    force: true
-
-- name: Make cmake shit
-  community.general.make:
-    target: install
-    chdir: "{{ defaults.home }}/neovim"
-    params:
-      CMAKE_EXTRA_FLAGS: "-DCMAKE_INSTALL_PREFIX={{ defaults.home }}/neovim"
+    mode: "0440"
 
 - name: Export neovim to path
   ansible.builtin.shell:
-    cmd: 'export PATH=$HOME/neovim/bin:$PATH'
+    cmd: 'export PATH=$HOME/neovim/nvim-linux64/bin:$PATH'
 
 - name: Install ghcup required packages
   ansible.builtin.apt:
@@ -68,7 +64,7 @@
   become: true
 
 - name: Install ghcup
-  ansible.builtin.shell: 'set -o pipefail && curl --proto =https --tlsv1.2 -sSf https://get-ghcup.haskell.org | BOOTSTRAP_HASKELL_NONINTERACTIVE=1 BOOTSTRAP_HASKELL_GHC_VERSION=8.8.4 BOOTSTRAP_HASKELL_CABAL_VERSION=latest BOOTSTRAP_HASKELL_INSTALL_STACK=1 BOOTSTRAP_HASKELL_INSTALL_HLS=1 BOOTSTRAP_HASKELL_ADJUST_BASHRC=P sh'
+  ansible.builtin.shell: 'curl --proto =https --tlsv1.2 -sSf https://get-ghcup.haskell.org | BOOTSTRAP_HASKELL_NONINTERACTIVE=1 BOOTSTRAP_HASKELL_GHC_VERSION=8.8.4 BOOTSTRAP_HASKELL_CABAL_VERSION=latest BOOTSTRAP_HASKELL_INSTALL_STACK=1 BOOTSTRAP_HASKELL_INSTALL_HLS=1 BOOTSTRAP_HASKELL_ADJUST_BASHRC=P sh'
 
 - name: Install fish
   ansible.builtin.apt:
