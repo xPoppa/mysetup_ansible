@@ -1,0 +1,16 @@
+---
+
+- name: Install fish
+  ansible.builtin.apt:
+    name: fish
+    state: present
+  become: true
+
+- name: Set fish as default shell
+  ansible.builtin.shell: 'chsh -s $(which fish) root'
+
+- name: Install oh my fish
+  ansible.builtin.shell: "curl https://raw.githubusercontent.com/oh-my-fish/oh-my-fish/master/bin/install | fish"
+
+- name: Install bob the fish
+  ansible.builtin.shell: "omf install bobthefish"

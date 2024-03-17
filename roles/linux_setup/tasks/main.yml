@@ -66,11 +66,3 @@
 - name: Install ghcup
   ansible.builtin.shell: 'curl --proto =https --tlsv1.2 -sSf https://get-ghcup.haskell.org | BOOTSTRAP_HASKELL_NONINTERACTIVE=1 BOOTSTRAP_HASKELL_GHC_VERSION=8.8.4 BOOTSTRAP_HASKELL_CABAL_VERSION=latest BOOTSTRAP_HASKELL_INSTALL_STACK=1 BOOTSTRAP_HASKELL_INSTALL_HLS=1 BOOTSTRAP_HASKELL_ADJUST_BASHRC=P sh'
 
-- name: Install fish
-  ansible.builtin.apt:
-    name: fish
-    state: present
-  become: true
-
-- name: Set fish as default shell
-  ansible.builtin.shell: 'chsh -s $(which fish)'
