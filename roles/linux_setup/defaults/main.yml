@@ -1,2 +1,2 @@
-defaults: 
+defaults:
     home: "{{ lookup('ansible.builtin.env', 'HOME') }}"
