@@ -2,11 +2,37 @@
 
 - name: "Update cache"
   ansible.builtin.apt:
-    update_cache:  true
+    update_cache: true
+
+- name: "Install psql-dependencies"
+  ansible.builtin.apt:
+    pkg:
+      - curl
+      - gpg
+      - gnupg2
+      - software-properties-common
+      - apt-transport-https
+      - lsb-release
+      - ca-certificates
+    state: "present"
+  become: true
+
+- name: "Pull postgres repository"
+  ansible.builtin.shell: "curl -fsSL https://www.postgresql.org/media/keys/ACCC4CF8.asc|sudo gpg --dearmor -o /etc/apt/trusted.gpg.d/postgresql.gpg"
+
+- name: "Add repo contents"
+  ansible.builtin.shell: "echo \"deb http://apt.postgresql.org/pub/repos/apt/ `lsb_release -cs`-pgdg main\" |sudo tee  /etc/apt/sources.list.d/pgdg.list"
+
+- name: "Update cache"
+  ansible.builtin.apt:
+    update_cache: true
+
 
 - name: Install psql
   ansible.builtin.apt:
-    name: postgresql-14
+    pkg:
+      - postgresql-13
+      - postgresql-client-13
     state: present
   become: true
 
@@ -14,14 +40,12 @@
   ansible.builtin.apt:
     name: tmux
     state: present
-    force_apt_get: true
   become: true
 
 - name: Install tldr
   ansible.builtin.apt:
     name: tldr
     state: present
-    force_apt_get: true
   become: true
 
 - name: Install nvim build prerequisites
@@ -37,10 +61,27 @@
   become: true
 
 - name: Checkout neovim
-  ansible.builtin.get_url:
-    url: "https://github.com/neovim/neovim/releases/download/v0.9.5/nvim-linux64.tar.gz"
+  ansible.builtin.git:
+    repo: https://github.com/neovim/neovim
     dest: "{{ defaults.home }}/neovim"
-    mode: "0440"
+    version: stable
+    force: true
+
+- name: Install neovim
+  shell:
+    cmd: 'rm -r build'
+    chdir: "{{ defaults.home }}/neovim"
+
+- name: Make cmake shit
+  community.general.make:
+    target: install
+    chdir: "{{ defaults.home }}/neovim"
+    params:
+      CMAKE_EXTRA_FLAGS: "-DCMAKE_INSTALL_PREFIX={{ defaults.home }}/neovim"
+
+- name: export neovim to path
+  shell:
+    cmd: 'export PATH=$HOME/neovim/bin:$PATH'
 
 - name: Export neovim to path
   ansible.builtin.shell:
