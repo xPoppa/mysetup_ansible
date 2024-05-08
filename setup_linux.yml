@@ -3,8 +3,8 @@
 
 - hosts: localhost
   gather_facts: false
-  roles: 
+  roles:
+  vars:
+    home: "{{ ansible_env.HOME }}"
     - role: "linux_setup"
     - role: "fish_setup"
-
-

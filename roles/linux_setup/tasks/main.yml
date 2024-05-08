@@ -3,6 +3,7 @@
 - name: "Update cache"
   ansible.builtin.apt:
     update_cache: true
+  become: true
 
 - name: "Install psql-dependencies"
   ansible.builtin.apt:
@@ -26,6 +27,7 @@
 - name: "Update cache"
   ansible.builtin.apt:
     update_cache: true
+  become: true
 
 
 - name: Install psql
@@ -68,9 +70,9 @@
     force: true
 
 - name: Install neovim
-  shell:
-    cmd: 'rm -r build'
-    chdir: "{{ defaults.home }}/neovim"
+  ansible.builtin.file:
+    state: absent
+    path : "{{ defaults.home }}/neovim/build"
 
 - name: Make cmake shit
   community.general.make:
@@ -79,13 +81,15 @@
     params:
       CMAKE_EXTRA_FLAGS: "-DCMAKE_INSTALL_PREFIX={{ defaults.home }}/neovim"
 
-- name: export neovim to path
-  shell:
-    cmd: 'export PATH=$HOME/neovim/bin:$PATH'
+- name: Export neovim to path
+  ansible.builtin.shell: "fish_add_path {{ defaults.home }}/neovim/bin"
+  args:
+    executable: "/usr/bin/fish"
 
 - name: Export neovim to path
-  ansible.builtin.shell:
-    cmd: 'export PATH=$HOME/neovim/nvim-linux64/bin:$PATH'
+  ansible.builtin.shell: "fish_add_path {{ defaults.home }}/neovim/nvim-linux64/bin"
+  args:
+    executable: "/usr/bin/fish"
 
 - name: Install ghcup required packages
   ansible.builtin.apt:
@@ -118,14 +122,15 @@
     state: present
     update_cache: true
     force_apt_get: true
+  become: true
 
 - name: Add GPG Key
   ansible.builtin.apt_key:
     url: "https://download.docker.com/linux/ubuntu/gpg"
+  become: true
 
-- name: Add Docker apt repository
-  ansible.builtin.apt_repository:
-    repo: "deb [arch=amd64] https://download.docker.com/linux/ubuntu {{ ansible_distribution_release }} stable"
+- name: Add docker apt repository
+  ansible.builtin.shell: "echo \"deb [arch=$(dpkg --print-architecture) signed-by=/etc/apt/keyrings/docker.asc] https://download.docker.com/linux/ubuntu $(. /etc/os-release && echo \"$VERSION_CODENAME\") stable\" | sudo tee /etc/apt/sources.list.d/docker.list > /dev/null"
 
 - name: Install Docker
   ansible.builtin.apt:
@@ -138,3 +143,4 @@
     state: present
     update_cache: true
     force_apt_get: true
+  become: true
